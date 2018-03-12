@@ -1,0 +1,55 @@
+{
+	"port": 3000,
+	"database":
+	{
+		"name": null,
+		"user": null,
+		"password": null,
+		"options":
+		{
+			"host": "localhost",
+			"port": "3306",
+			"dialect": "mysql",
+			"logging": false,
+			"sync":
+			{
+				"force": true,
+				"alter": false
+			},
+			"paranoid": false
+		}
+	},
+	"logging":
+	{
+		"level": "error"
+	},
+	"cnam":
+	{
+		"baseUrl": "https://api.opencnam.com/v3/phone/",
+		"timeout": 350,
+		"auth":
+		{
+			"username": "",
+			"password": "",
+			"sendImmediately": false
+		},
+		"qs":
+		{
+			"format": "json",
+			"service_level": "standard",
+			"casing": "caps",
+			"mobile": "wireless",
+			"no_value": "unknown",
+			"geo": "rate"
+		},
+		"json": true
+	},
+	"cache":
+	{
+		"defaultExpire":
+		{
+			"units": "days",
+			"value": 1
+		}
+	}
+}
