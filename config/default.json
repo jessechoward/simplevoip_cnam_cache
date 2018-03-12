@@ -16,7 +16,8 @@
 				"force": false,
 				"alter": false
 			},
-			"paranoid": false
+			"paranoid": false,
+			"operatorsAliases": false
 		}
 	},
 	"logging":

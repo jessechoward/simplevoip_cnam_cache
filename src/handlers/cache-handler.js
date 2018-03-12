@@ -14,29 +14,66 @@ const sequelize = new Sequelize(
 	config.get('database.password'),
 	config.get('database.options'));
 
-// don't start the app if we can't connect
-sequelize.authenticate()
-	.then(() =>
-	{
-		logger.info('database is online');
-	})
-	.catch((error) =>
-	{
-		logger.error('database unable to connect');
-		process.exit(1);
-	});
-
 // import the model
 const Cache = sequelize.import('../models/mysql-cache.js');
 
+// continuously check the database connection
+let DATABASE_CONNECTION = false;
+
 // sync the database to make sure all the correct tables exist
-sequelize.sync();
+sequelize.sync()
+	.then(() =>
+	{
+		logger.info('Database connected');
+		DATABASE_CONNECTION = true;
+	})
+	.catch((error) =>
+	{
+		logger.warn('Database connection failed', {sequelize_error: error});
+	});
+
+const isDatabaseConnected = function ()
+{
+	sequelize.authenticate()
+		.then(() =>
+	{
+		// log when connection state changes
+		if (!DATABASE_CONNECTION)
+		{
+			logger.warn('Database connection re-established');
+			DATABASE_CONNECTION = true;
+		}
+	})
+	.catch((error) =>
+	{
+		// log when connection state changes
+		if (DATABASE_CONNECTION)
+		{
+			logger.warn('Database connection lost');
+			DATABASE_CONNECTION = false;
+		}
+	});
+
+	// immediately return the current state
+	// don't wait for the callbacks to complete
+	return DATABASE_CONNECTION;
+};
+
+// check the database connectivity every minute
+setInterval(isDatabaseConnected, 60000);
 
 // this will attempt to lookup the result from the cache
 // otherwise it will pass handling back to the requestor
 // to look elsewhere - i.e. the CNAM provider
 exports.cacheLookup = (req, res, next) =>
 {
+	// do our best to limit the delays if the database is not connected
+	if (!isDatabaseConnected())
+	{
+		logger.debug('Database not connected for cached lookups!!!!');
+		return next();
+	}
+
 	Cache.findById(req.DID)
 		.then((result) =>
 		{
@@ -75,6 +112,13 @@ exports.cacheLookup = (req, res, next) =>
 // and that the result has been added to the request object
 exports.cacheResult = (req, res) =>
 {
+	// do our best to limit the delays if the database is not connected
+	if (!isDatabaseConnected())
+	{
+		logger.debug('Database not connected for caching lookup');
+		return;
+	}
+
 	Cache.findOrCreate({where: {id: req.DID}, defaults: {id: req.DID, result: JSON.stringify(req.result)}})
 		.spread((result, created) =>
 		{
@@ -92,6 +136,12 @@ const defaultExpire = config.has('cache.defaultExpire') ? config.get('cache.defa
 // this method should delete expired cached results
 exports.expireCachedResults = (req, res) =>
 {
+	if (!isDatabaseConnected())
+	{
+		logger.debug('Database not connected for cleaning up cache');
+		return;
+	}
+
 	if (!req.params.expire)
 	{
 		req.params.expire = moment().subtract(defaultExpire.value, defaultExpire.units).toISOString();
@@ -114,6 +164,14 @@ exports.expireCachedResults = (req, res) =>
 
 exports.closeGracefully = () =>
 {
+	/*
+	if (!isDatabaseConnected())
+	{
+		logger.debug('Database already closed');
+		return;
+	}
+	*/
+
 	logger.warn('Database connections are being manually closed!!!!');
 	sequelize.close()
 		.then(() =>

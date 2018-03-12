@@ -18,6 +18,11 @@ const invalidNumbers =
 	'555123456'
 ];
 
+const multiResponse = function (value)
+{
+	return ['SAMPLE', 'UNKNOWN'].includes(value);
+};
+
 describe('Valid number tests', function ()
 {
 	let app = null;
@@ -29,7 +34,7 @@ describe('Valid number tests', function ()
 		setTimeout(() =>
 		{
 			done();
-		}, 1500);
+		}, 500);
 		delete require.cache[require.resolve('../src/index')];
 		app = require('../src/index');
 		api = supertest(app);
@@ -59,7 +64,7 @@ describe('Valid number tests', function ()
 				.expect(codes.HTTP_OK)
 				.end(function (error, res)
 				{
-					expect(res.body.name).to.equal('SAMPLE');
+					expect(res.body.name).to.satisfy(multiResponse);
 					done();
 				});
 		});
@@ -89,7 +94,7 @@ describe('Invalid number tests', function ()
 		setTimeout(() =>
 		{
 			done();
-		}, 1500);
+		}, 500);
 		delete require.cache[require.resolve('../src/index')];
 		app = require('../src/index');
 		api = supertest(app);
@@ -122,7 +127,7 @@ describe('Invalid number tests', function ()
 	});
 });
 
-describe('Connection to cache is lost tests', function ()
+describe('No database connection tests', function ()
 {
 	let app = null;
 	let api = null;
@@ -139,8 +144,8 @@ describe('Connection to cache is lost tests', function ()
 			setTimeout(() =>
 			{
 				done();
-			}, 1000);
-		}, 2000);
+			}, 500);
+		}, 500);
 		delete require.cache[require.resolve('../src/index')];
 		app = require('../src/index');
 		api = supertest(app);
@@ -167,7 +172,12 @@ describe('Connection to cache is lost tests', function ()
 		it('cached lookup should respond with a 200 OK', (done) =>
 		{
 			api.get(`/cache/${did}`)
-				.expect(codes.HTTP_OK, done);
+				.expect(codes.HTTP_OK)
+				.end(function (error, res)
+				{
+					expect(res.body.name).to.satisfy(multiResponse);
+					done();
+				});
 		});
 
 		it('provider lookup should respond with a 200 OK', (done) =>

@@ -3,6 +3,10 @@ const mocha = require('gulp-mocha');
 const lint = require('gulp-eslint');
 const yarn = require('gulp-yarn');
 const zip = require('gulp-zip');
+const del = require('del');
+const semver = require('semver');
+const package = require('./package.json');
+const fs = require('fs-extra');
 
 const paths =
 {
@@ -18,16 +22,27 @@ const paths =
 
 gulp.task('mocha', function ()
 {
+	const mocha_options =
+	{
+		reporter: 'xunit',
+		reporterOptions: {reportFilename: 'build/log/unit-tests.xml'},
+		exit: true,
+		bail: true
+	};
+
 	return gulp.src(paths.test, {read: false})
-		.pipe(mocha({reporter: 'list', exit: true}))
+		.pipe(mocha(mocha_options))
 		.on('error', console.error);
 });
 
 gulp.task('lint', function ()
 {
+	fs.mkdirpSync('./build/log');
+	const log_stream = fs.createWriteStream('build/log/lint.json', {flags: 'w'});
+
 	return gulp.src(['src/**/*.js', '!node_modules/**'])
 		.pipe(lint())
-		.pipe(lint.format())
+		.pipe(lint.format('json', log_stream))
 		.pipe(lint.failAfterError());
 });
 
@@ -43,7 +58,7 @@ gulp.task('copy:config', function ()
 		.pipe(gulp.dest('build/tmp'));
 });
 
-gulp.task('copy', ['copy:src', 'copy:config']);
+gulp.task('copy', gulp.parallel('copy:src', 'copy:config'));
 
 gulp.task('yarn', function ()
 {
@@ -52,14 +67,14 @@ gulp.task('yarn', function ()
 		.pipe(yarn({production: true}));
 });
 
-gulp.task('test', ['lint', 'mocha']);
+gulp.task('test', gulp.series('lint', 'mocha'));
 
-gulp.task('build', ['test', 'copy', 'yarn'], function ()
+gulp.task('build', gulp.series('test', 'copy', 'yarn', function ()
 {
 	return gulp.src(['build/tmp/**/*'])
 		.pipe(zip('build.zip'))
 		.pipe(gulp.dest('build/dist'));
-});
+}));
 
-gulp.task('default', ['test']);
+gulp.task('default', gulp.parallel('test'));
 
