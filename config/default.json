@@ -1,5 +1,5 @@
 {
-	"port": 3000,
+	"port": 8080,
 	"database":
 	{
 		"name": null,
@@ -13,7 +13,7 @@
 			"logging": false,
 			"sync":
 			{
-				"force": true,
+				"force": false,
 				"alter": false
 			},
 			"paranoid": false
