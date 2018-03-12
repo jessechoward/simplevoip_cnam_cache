@@ -52,16 +52,14 @@ gulp.task('yarn', function ()
 		.pipe(yarn({production: true}));
 });
 
-gulp.task('build', ['copy', 'yarn'], function ()
+gulp.task('test', ['lint', 'mocha']);
+
+gulp.task('build', ['test', 'copy', 'yarn'], function ()
 {
-	console.log('zipping build');
 	return gulp.src(['build/tmp/**/*'])
 		.pipe(zip('build.zip'))
 		.pipe(gulp.dest('build/dist'));
 });
 
-gulp.task('default', ['lint', 'mocha'], function ()
-{
-	return gutil.log('Gulp is running');
-});
+gulp.task('default', ['test']);
 
