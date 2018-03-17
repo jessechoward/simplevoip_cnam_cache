@@ -13,7 +13,7 @@
 		"winston": "^2.4.0"
 	},
 	"name": "cnam-with-cached-lookups",
-	"version": "1.0.1",
+	"version": "1.0.2-alpha.8",
 	"main": "src/index.js",
 	"private": true,
 	"devDependencies": {
@@ -23,6 +23,7 @@
 		"fs-extra": "^5.0.0",
 		"gulp": "gulpjs/gulp.git#4.0",
 		"gulp-bump": "^3.1.0",
+		"gulp-debug": "^3.2.0",
 		"gulp-eslint": "^4.0.2",
 		"gulp-filter": "^5.1.0",
 		"gulp-git": "^2.5.2",

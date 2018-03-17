@@ -8,6 +8,7 @@ const bump = require('gulp-bump');
 const filter = require('gulp-filter');
 const tagVersion = require('gulp-tag-version');
 // const fs = require('fs-extra');
+const debug = require('gulp-debug');
 
 const paths =
 {
@@ -25,14 +26,13 @@ gulp.task('mocha', function ()
 {
 	const mochaOptions =
 	{
-		reporter: 'spec',
+		reporter: 'nyan',
 		exit: true,
 		bail: true
 	};
 
 	return gulp.src(paths.test, {read: false})
-		.pipe(mocha(mochaOptions))
-		.on('error', console.error);
+		.pipe(mocha(mochaOptions));
 });
 
 gulp.task('lint', function ()
@@ -64,7 +64,11 @@ gulp.task('yarn', function ()
 		.pipe(yarn({production: true}));
 });
 
-gulp.task('test', gulp.series('lint', 'mocha'));
+gulp.task('test', gulp.series('lint', 'mocha'), function (done)
+{
+	console.log('inside the testing tesk');
+	return done();
+});
 
 gulp.task('build', gulp.series('test', 'copy', 'yarn', function ()
 {
@@ -89,22 +93,24 @@ const increment = function (bumpOptions)
 		.pipe(tagVersion());
 };
 
-gulp.task('patch', gulp.series('test'), function ()
+gulp.task('bump:patch', gulp.series('test'), function ()
 {
 	return increment({type: 'patch'});
 });
 
-gulp.task('minor', gulp.series('test'), function ()
+gulp.task('bump:minor', gulp.series('test'), function ()
 {
 	return increment({type: 'minor'});
 });
 
-gulp.task('major', gulp.series('test'), function ()
+gulp.task('bump:major', gulp.series('test'), function ()
 {
 	return increment({type: 'major'});
 });
 
-gulp.task('prerelease', gulp.series('test'), function ()
+gulp.task('bump:prerelease', function ()
 {
 	return increment({type: 'prerelease', preid: 'alpha'});
 });
+
+gulp.task('prerelease', gulp.series('test', 'bump:prerelease'));

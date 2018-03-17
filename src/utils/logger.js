@@ -13,6 +13,7 @@ const logger = new winston.Logger(
 			json: true,
 			colorize: true,
 			timestamp: true,
+			silent: true,
 			stderrLevels: ['error']
 		})
 		// add additional transports here like to a stream

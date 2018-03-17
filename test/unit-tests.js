@@ -28,7 +28,7 @@ describe('Valid number tests', function ()
 	let app = null;
 	let api = null;
 
-	beforeEach(function (done)
+	before(function (done)
 	{
 		this.timeout(5000);
 		setTimeout(() =>
@@ -40,7 +40,7 @@ describe('Valid number tests', function ()
 		api = supertest(app);
 	});
 
-	afterEach(function (done)
+	after(function (done)
 	{
 		app.close(done);
 	});
@@ -87,7 +87,7 @@ describe('Invalid number tests', function ()
 	let app = null;
 	let api = null;
 
-	beforeEach(function (done)
+	before(function (done)
 	{
 		this.timeout(5000);
 
@@ -100,7 +100,7 @@ describe('Invalid number tests', function ()
 		api = supertest(app);
 	});
 
-	afterEach(function (done)
+	after(function (done)
 	{
 		app.close(done);
 	});
@@ -132,7 +132,7 @@ describe('No database connection tests', function ()
 	let app = null;
 	let api = null;
 
-	beforeEach(function (done)
+	before(function (done)
 	{
 		this.timeout(5000);
 		setTimeout(() =>
@@ -151,7 +151,7 @@ describe('No database connection tests', function ()
 		api = supertest(app);
 	});
 
-	afterEach(function (done)
+	after(function (done)
 	{
 		app.close(done);
 	});
