@@ -3,9 +3,10 @@ const mocha = require('gulp-mocha');
 const lint = require('gulp-eslint');
 const yarn = require('gulp-yarn');
 const zip = require('gulp-zip');
-const del = require('del');
-const semver = require('semver');
-const package = require('./package.json');
+const git = require('gulp-git');
+const bump = require('gulp-bump');
+const filter = require('gulp-filter');
+const tagVersion = require('gulp-tag-version');
 const fs = require('fs-extra');
 
 const paths =
@@ -24,8 +25,8 @@ gulp.task('mocha', function ()
 {
 	const mocha_options =
 	{
-		reporter: 'xunit',
-		reporterOptions: {reportFilename: 'build/log/unit-tests.xml'},
+		reporter: 'spec',
+//		reporterOptions: {reportFilename: 'build/log/unit-tests.xml'},
 		exit: true,
 		bail: true
 	};
@@ -37,12 +38,12 @@ gulp.task('mocha', function ()
 
 gulp.task('lint', function ()
 {
-	fs.mkdirpSync('./build/log');
-	const log_stream = fs.createWriteStream('build/log/lint.json', {flags: 'w'});
+	// fs.mkdirpSync('./build/log');
+	// const log_stream = fs.createWriteStream('build/log/lint.json', {flags: 'w'});
 
 	return gulp.src(['src/**/*.js', '!node_modules/**'])
 		.pipe(lint())
-		.pipe(lint.format('json', log_stream))
+		.pipe(lint.format(/* 'json', log_stream */))
 		.pipe(lint.failAfterError());
 });
 
@@ -78,3 +79,36 @@ gulp.task('build', gulp.series('test', 'copy', 'yarn', function ()
 
 gulp.task('default', gulp.parallel('test'));
 
+const increment = function (bumpOptions)
+{
+	// include any files we need to keep the version consistent in
+	return gulp.src(['./package.json'])
+		// bump the version in those files
+		.pipe(bump(bumpOptions))
+		// save the output back to the file system
+		.pipe(gulp.dest('./'))
+		// read only the package.json file for the version to tag the repo with
+		.pipe(filter('package.json'))
+		// tag the repo
+		.pipe(tagVersion());
+};
+
+gulp.task('patch', gulp.series('test'), function ()
+{
+	return increment({type: 'patch'});
+});
+
+gulp.task('minor', gulp.series('test'), function ()
+{
+	return increment({type: 'minor'});
+});
+
+gulp.task('major', gulp.series('test'), function ()
+{
+	return increment({type: 'major'});
+});
+
+gulp.task('prerelease', gulp.series('test'), function ()
+{
+	return increment({type: 'prerelease'});
+});
