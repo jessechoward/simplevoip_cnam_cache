@@ -3,11 +3,11 @@ const mocha = require('gulp-mocha');
 const lint = require('gulp-eslint');
 const yarn = require('gulp-yarn');
 const zip = require('gulp-zip');
-const git = require('gulp-git');
+// const git = require('gulp-git');
 const bump = require('gulp-bump');
 const filter = require('gulp-filter');
 const tagVersion = require('gulp-tag-version');
-const fs = require('fs-extra');
+// const fs = require('fs-extra');
 
 const paths =
 {
@@ -23,27 +23,23 @@ const paths =
 
 gulp.task('mocha', function ()
 {
-	const mocha_options =
+	const mochaOptions =
 	{
 		reporter: 'spec',
-//		reporterOptions: {reportFilename: 'build/log/unit-tests.xml'},
 		exit: true,
 		bail: true
 	};
 
 	return gulp.src(paths.test, {read: false})
-		.pipe(mocha(mocha_options))
+		.pipe(mocha(mochaOptions))
 		.on('error', console.error);
 });
 
 gulp.task('lint', function ()
 {
-	// fs.mkdirpSync('./build/log');
-	// const log_stream = fs.createWriteStream('build/log/lint.json', {flags: 'w'});
-
 	return gulp.src(['src/**/*.js', '!node_modules/**'])
 		.pipe(lint())
-		.pipe(lint.format(/* 'json', log_stream */))
+		.pipe(lint.format())
 		.pipe(lint.failAfterError());
 });
 
@@ -110,5 +106,5 @@ gulp.task('major', gulp.series('test'), function ()
 
 gulp.task('prerelease', gulp.series('test'), function ()
 {
-	return increment({type: 'prerelease'});
+	return increment({type: 'prerelease', preid: 'alpha'});
 });
