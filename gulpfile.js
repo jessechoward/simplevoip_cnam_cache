@@ -46,13 +46,13 @@ gulp.task('lint', function ()
 gulp.task('copy:src', function ()
 {
 	return gulp.src(['src/**/*.js'], {base: '.'})
-		.pipe(gulp.dest('build/tmp'));
+		.pipe(gulp.dest('build/dist'));
 });
 
 gulp.task('copy:config', function ()
 {
 	return gulp.src(['config/*.json'], {base: '.'})
-		.pipe(gulp.dest('build/tmp'));
+		.pipe(gulp.dest('build/dist'));
 });
 
 gulp.task('copy', gulp.parallel('copy:src', 'copy:config'));
@@ -60,7 +60,7 @@ gulp.task('copy', gulp.parallel('copy:src', 'copy:config'));
 gulp.task('yarn', function ()
 {
 	return gulp.src(paths.package)
-		.pipe(gulp.dest('build/tmp'))
+		.pipe(gulp.dest('build/dist'))
 		.pipe(yarn({production: true}));
 });
 
@@ -70,7 +70,9 @@ gulp.task('test', gulp.series('lint', 'mocha'), function (done)
 	return done();
 });
 
-gulp.task('build', gulp.series('test', 'copy', 'yarn', function ()
+gulp.task('build:dist', gulp.series('copy', 'yarn'));
+
+gulp.task('build:zip', gulp.series('copy', 'yarn', function ()
 {
 	return gulp.src(['build/tmp/**/*'])
 		.pipe(zip('build.zip'))
