@@ -116,3 +116,5 @@ gulp.task('bump:prerelease', function ()
 });
 
 gulp.task('prerelease', gulp.series('test', 'bump:prerelease'));
+
+gulp.task('patch', gulp.series('test', 'bump:patch'));
