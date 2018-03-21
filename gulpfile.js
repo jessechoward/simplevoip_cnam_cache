@@ -95,17 +95,17 @@ const increment = function (bumpOptions)
 		.pipe(tagVersion());
 };
 
-gulp.task('bump:patch', gulp.series('test'), function ()
+gulp.task('bump:patch', function ()
 {
 	return increment({type: 'patch'});
 });
 
-gulp.task('bump:minor', gulp.series('test'), function ()
+gulp.task('bump:minor', function ()
 {
 	return increment({type: 'minor'});
 });
 
-gulp.task('bump:major', gulp.series('test'), function ()
+gulp.task('bump:major', function ()
 {
 	return increment({type: 'major'});
 });
