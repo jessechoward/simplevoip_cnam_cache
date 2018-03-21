@@ -13,7 +13,7 @@
 		"winston": "^2.4.0"
 	},
 	"name": "cnam-with-cached-lookups",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"main": "src/index.js",
 	"private": true,
 	"devDependencies": {
