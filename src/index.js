@@ -19,7 +19,7 @@ app.use(logger.middleware);
 app.use(require('./routes'));
 
 // start the server listening for new requests
-const server = app.listen(config.get('port'), () =>
+const server = app.listen(config.get('port'), config.get('bind'), () =>
 {
 	logger.info(`Listening on port: ${server.address().port}`);
 });

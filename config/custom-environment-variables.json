@@ -1,5 +1,6 @@
 {
 	"port": "PORT",
+	"bind": "BIND_ADDRESS",
 	"database":
 	{
 		"name": "DATABASE_NAME",
