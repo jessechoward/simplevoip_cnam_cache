@@ -3,12 +3,9 @@ const mocha = require('gulp-mocha');
 const lint = require('gulp-eslint');
 const yarn = require('gulp-yarn');
 const zip = require('gulp-zip');
-// const git = require('gulp-git');
 const bump = require('gulp-bump');
 const filter = require('gulp-filter');
 const tagVersion = require('gulp-tag-version');
-// const fs = require('fs-extra');
-const debug = require('gulp-debug');
 
 const paths =
 {
@@ -66,7 +63,6 @@ gulp.task('yarn', function ()
 
 gulp.task('test', gulp.series('lint', 'mocha'), function (done)
 {
-	console.log('inside the testing tesk');
 	return done();
 });
 
@@ -74,7 +70,7 @@ gulp.task('build:dist', gulp.series('copy', 'yarn'));
 
 gulp.task('build:zip', gulp.series('copy', 'yarn', function ()
 {
-	return gulp.src(['build/tmp/**/*'])
+	return gulp.src(['build/dist/**/*'])
 		.pipe(zip('build.zip'))
 		.pipe(gulp.dest('build/dist'));
 }));
