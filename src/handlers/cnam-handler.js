@@ -18,7 +18,7 @@ exports.cnamLookup = (req, res, next) =>
 	}
 
 	// if not, do the lookup
-	provider.lookup(req.DID, (error, result) =>
+	provider.lookup(req.id, req.DID, (error, result) =>
 	{
 		if (error || !result)
 		{

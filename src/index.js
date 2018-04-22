@@ -3,10 +3,14 @@ const config = require('config');
 const app = require('express')();
 const bodyParser = require('body-parser');
 const responseTime = require('response-time')();
+const requestId = require('express-request-id')();
 const logger = require('./utils/logger');
 
 // add the X-Response-Time header to responses
 app.use(responseTime);
+
+// add the request-id headers
+app.use(requestId);
 
 // parse the request body and params etc.
 app.use(bodyParser.json());

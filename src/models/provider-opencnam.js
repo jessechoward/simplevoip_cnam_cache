@@ -10,11 +10,15 @@ const settings = config.get('cnam');
 // for any provider provide a 'lookup' method
 // that takes a NANP number as the first argument
 // and a callback function (error, result) as the second
-exports.lookup = (nanp, callback) =>
+exports.lookup = (requestId, nanp, callback) =>
 {
 	// We went through the pain of normalizing the number early on
 	// so we don't need all sorts of request logic in the url here
-	request.get(`/${nanp}`, settings, (error, response, body) =>
+	// also, make sure we add the request-id header so we can keep
+	// a full record of the transaction
+	request.get(`/${nanp}`,
+		Object.assign({}, settings, {headers: {'X-Request-Id': requestId}}),
+		(error, response, body) =>
 	{
 		if (error)
 		{

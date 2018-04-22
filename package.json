@@ -4,6 +4,7 @@
 		"config": "^1.30.0",
 		"dotenv": "^5.0.1",
 		"express": "^4.16.2",
+		"express-request-id": "^1.4.0",
 		"http-response-codes": "^1.0.4",
 		"moment": "^2.21.0",
 		"mysql2": "^1.5.2",
@@ -34,7 +35,6 @@
 		"husky": "^0.14.3",
 		"mocha": "^5.0.4",
 		"nyc": "^11.4.1",
-		"spectacle-docs": "^1.0.3",
 		"supertest": "^3.0.0"
 	},
 	"scripts": {
