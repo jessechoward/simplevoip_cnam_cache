@@ -13,7 +13,7 @@ const logger = new winston.Logger(
 			json: true,
 			colorize: true,
 			timestamp: true,
-			silent: true,
+			silent: process.env.NODE_ENV === 'testing' ? true : false,
 			stderrLevels: ['error']
 		})
 		// add additional transports here like to a stream
@@ -37,11 +37,13 @@ logger.middleware = (req, res, next) =>
 	{
 		logger.info(res.statusMessage,
 		{
+			type: 'http-request',
+			id: req.id,
 			sourceIp: req.ip,
 			protocol: req.protocol,
 			url: req.hostname + req.originalUrl,
 			statusCode: res.statusCode,
-			responseTime: res && res.getHeaders() ? res.getHeaders() : NaN
+			responseTime: res && res.getHeaders() ? res.getHeaders()['x-response-time'] : NaN
 		});
 
 		next();
