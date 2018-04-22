@@ -1,6 +1,7 @@
 {
 	"port": "PORT",
 	"bind": "BIND_ADDRESS",
+	"logging": {"level": "LOG_LEVEL"},
 	"database":
 	{
 		"name": "DATABASE_NAME",
@@ -15,6 +16,7 @@
 	},
 	"cnam":
 	{
+		"timeout": "CNAM_TIMEOUT",
 		"auth":
 		{
 			"username": "CNAM_SID",

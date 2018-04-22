@@ -51,7 +51,7 @@
 		"defaultExpire":
 		{
 			"units": "days",
-			"value": 1
+			"value": 180
 		}
 	}
 }
