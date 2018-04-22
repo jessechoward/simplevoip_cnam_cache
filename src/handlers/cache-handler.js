@@ -112,8 +112,11 @@ exports.cacheLookup = (req, res, next) =>
 // and that the result has been added to the request object
 exports.cacheResult = (req, res) =>
 {
-	// do not cache unknown results
-	if (req.result && (req.result.name === '' || req.result.name.toLowercase() ==='unknown'))
+	const price = parseFloat(req.result.price);
+
+	// do not cache free lookups or unknown results
+	if (req.result && (isNaN(price) || price < 0.0001 ||
+		req.result.name === '' || req.result.name.toLowercase() ==='unknown'))
 	{
 		logger.debug('Skipping caching of lookup with UNKNOWN result');
 		return;
@@ -166,6 +169,30 @@ exports.expireCachedResults = (req, res) =>
 			logger.error('cleanup cache failed', {sequelize_error: error});
 			return res.status(codes.HTTP_OK)
 				.json({exiredAt: req.params.expire, affectedRows: 0});
+		});
+};
+
+// delete an entry from the cache
+exports.deleteEntry = (req, res) =>
+{
+	if (!isDatabaseConnected())
+	{
+		logger.debug('Database not connected for cleaning up cache');
+		return res.status(codes.HTTP_SERVICE_UNAVAILABLE).json({error: 'Database not connected.'});
+	}
+
+	Cache.destroy({where: {id: req.DID}})
+		.then((affectedRows) =>
+		{
+			logger.info('deleting cached intry', {deletedEntry: req.DID, affectedRows: affectedRows});
+			return res.status(codes.HTTP_OK)
+				.json({deletedEntry: req.DID, affectedRows: affectedRows});
+		})
+		.catch((error) =>
+		{
+			logger.error('deleting from cache failed', {sequelize_error: error});
+			return res.status(codes.HTTP_NOT_FOUND)
+				.json({error: error});
 		});
 };
 

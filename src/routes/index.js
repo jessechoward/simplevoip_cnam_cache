@@ -78,7 +78,8 @@ router.route('/:nanp')
 
 // specify cache only lookups
 router.route('/cache/:nanp')
-	.get(cache.cacheLookup, sendResponse);
+	.get(cache.cacheLookup, sendResponse)
+	.delete(cache.deleteEntry);
 
 // specify fresh provider lookups
 router.route('/provider/:nanp')
