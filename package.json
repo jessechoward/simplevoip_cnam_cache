@@ -34,6 +34,7 @@
 		"husky": "^0.14.3",
 		"mocha": "^5.0.4",
 		"nyc": "^11.4.1",
+		"spectacle-docs": "^1.0.3",
 		"supertest": "^3.0.0"
 	},
 	"scripts": {

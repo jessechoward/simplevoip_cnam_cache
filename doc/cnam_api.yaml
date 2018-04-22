@@ -1,0 +1,49 @@
+openapi: "3.0.0"
+info:
+  title: "SimpleVoIP CNAM cache"
+  license:
+    name: "MIT"
+paths:
+  /{nanp}:
+    get:
+      summary: "Request the CNAM value for a NANP formatted number"
+      parameters:
+        - name: "nanp"
+          in: path
+          required: true
+          description: "the NANP formatted number to lookup"
+          schema:
+            $ref: "#/components/schemas/nanp"
+      responses:
+        "200":
+          description: "Expected result to valid Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResOk"
+        default:
+          description: "The nature of the service means we always return a 200 OK response with default values"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResOk"
+components:
+  schemas:
+    nanp:
+      type: string
+      pattern:  /^\+?1?([2-9][0-9]{2})([2-9](?11)[0-9]{2})([0-9]{4})$/
+    ResOk:
+      type: object
+      properties:
+        name:
+          description: "the response value of the CNAM lookup"
+          type: string
+        number: 
+          description: "the source number used for the lookup"
+          type: string
+        price:
+          description: "the price of the lookup"
+          type: number
+        uri:
+          description: "the requested uri"
+          type: string
