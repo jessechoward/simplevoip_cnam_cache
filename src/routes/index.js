@@ -76,7 +76,7 @@ router.route('/:nanp')
 	// if we get a response from the provider, cache the result
 	.get(cache.cacheLookup, provider.cnamLookup, sendResponse, cache.cacheResult);
 
-// specify cache only lookups
+// specify cache only operations
 router.route('/cache/:nanp')
 	.get(cache.cacheLookup, sendResponse)
 	.delete(cache.deleteEntry);
