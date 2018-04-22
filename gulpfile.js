@@ -40,6 +40,12 @@ gulp.task('lint', function ()
 		.pipe(lint.failAfterError());
 });
 
+gulp.task('env:testing', function (done)
+{
+	process.env.NODE_ENV = 'testing';
+	return done();
+});
+
 gulp.task('copy:src', function ()
 {
 	return gulp.src(['src/**/*.js'], {base: '.'})
@@ -61,7 +67,7 @@ gulp.task('yarn', function ()
 		.pipe(yarn({production: true}));
 });
 
-gulp.task('test', gulp.series('lint', 'mocha'), function (done)
+gulp.task('test', gulp.series('env:testing', 'lint', 'mocha'), function (done)
 {
 	return done();
 });
