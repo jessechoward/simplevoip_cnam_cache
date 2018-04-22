@@ -112,6 +112,13 @@ exports.cacheLookup = (req, res, next) =>
 // and that the result has been added to the request object
 exports.cacheResult = (req, res) =>
 {
+	// do not cache unknown results
+	if (req.result && (req.result.name === '' || req.result.name.toLowercase() ==='unknown'))
+	{
+		logger.debug('Skipping caching of lookup with UNKNOWN result');
+		return;
+	}
+
 	// do our best to limit the delays if the database is not connected
 	if (!isDatabaseConnected())
 	{
