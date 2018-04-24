@@ -116,7 +116,7 @@ exports.cacheResult = (req, res) =>
 
 	// do not cache free lookups or unknown results
 	if (req.result && (isNaN(price) || price < 0.0001 ||
-		req.result.name === '' || req.result.name.toLowercase() ==='unknown'))
+		req.result.name === '' || req.result.name.toLowerCase() ==='unknown'))
 	{
 		logger.debug('Skipping caching of lookup with UNKNOWN result');
 		return;
